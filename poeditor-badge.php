@@ -35,7 +35,10 @@ $color = percent2Color($langArray[$langCode]["percentage"]);
 
 $url = "https://img.shields.io/badge/" . $langArray[$langCode]["name"] . "-" . $langArray[$langCode]["percentage"] . "-" . $color . ".svg";
 
-echo file_get_contents_curl($url);
+$result = file_get_contents_curl($url);
+if(substr( $result, 0, 4 ) === "<svg") {
+    echo $result;
+}
 
 function file_get_contents_curl( $url ) {
     $ch = curl_init();
