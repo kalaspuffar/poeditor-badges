@@ -34,7 +34,23 @@ $langCode = $_GET["langCode"];
 $color = percent2Color($langArray[$langCode]["percentage"]);
 
 $url = "https://img.shields.io/badge/" . $langArray[$langCode]["name"] . "-" . $langArray[$langCode]["percentage"] . "-" . $color . ".svg";
-echo file_get_contents($url);
+
+echo file_get_contents_curl($url);
+
+function file_get_contents_curl( $url ) {
+    $ch = curl_init();
+
+    curl_setopt( $ch, CURLOPT_AUTOREFERER, TRUE );
+    curl_setopt( $ch, CURLOPT_HEADER, 0 );
+    curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1 );
+    curl_setopt( $ch, CURLOPT_URL, $url );
+    curl_setopt( $ch, CURLOPT_FOLLOWLOCATION, TRUE );
+
+    $data = curl_exec( $ch );
+    curl_close( $ch );
+
+    return $data;
+}
 
 function percent2Color($value,$brightness = 255, $max = 100,$min = 0, $thirdColorHex = '00')
 {
