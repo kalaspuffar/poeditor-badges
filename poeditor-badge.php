@@ -21,14 +21,29 @@ curl_close($curl);
 
 $result = json_decode($jsonResult);
 
+foreach ($result->result->languages as $language) {
+    $color = percent2Color($language->percentage);
+
+    $url = "https://img.shields.io/badge/" . $language->name . "-" . $language->percentage . "-" . $color . ".svg";
+
+    $result = file_get_contents_curl($url);
+    if(substr( $result, 0, 4 ) === "<svg") {
+        file_put_contents($language->code . ".svg", $result);
+    }
+}
+
+
+/*
 $langArray = array();
 foreach ($result->result->languages as $language) {
     $langArray[$language->code] = array(
         "name" => $language->name,
         "percentage" => $language->percentage
+        "code" => $language->code
     );
-}
 
+
+}
 $langCode = $_GET["langCode"];
 
 $color = percent2Color($langArray[$langCode]["percentage"]);
@@ -39,6 +54,7 @@ $result = file_get_contents_curl($url);
 if(substr( $result, 0, 4 ) === "<svg") {
     echo $result;
 }
+*/
 
 function file_get_contents_curl( $url ) {
     $ch = curl_init();
