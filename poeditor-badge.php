@@ -20,19 +20,35 @@ $jsonResult = curl_exec($curl);
 curl_close($curl);
 
 $result = json_decode($jsonResult);
+?>
 
-foreach ($result->result->languages as $language) {
-    $color = percent2Color($language->percentage);
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Images</title>
+</head>
+<body>
+    <?php
+    foreach ($result->result->languages as $language) {
+        $color = percent2Color($language->percentage);
 
-    $url = "https://img.shields.io/badge/" . $language->name . "-" . $language->percentage . "-" . $color . ".svg";
+        $url = "https://img.shields.io/badge/" . $language->name . "-" . $language->percentage . "-" . $color . ".svg";
 
-    $result = file_get_contents_curl($url);
-    if(substr( $result, 0, 4 ) === "<svg") {
-        file_put_contents($language->code . ".svg", $result);
+        $result = file_get_contents_curl($url);
+        if(substr( $result, 0, 4 ) === "<svg") {
+            file_put_contents($language->code . ".svg", $result);
+            ?><img src="<?=$language->code?>.svg" /><?
+        }
     }
-}
+    ?>
 
+</body>
+</html>
 
+<?php
 /*
 $langArray = array();
 foreach ($result->result->languages as $language) {
@@ -89,3 +105,4 @@ function percent2Color($value,$brightness = 255, $max = 100,$min = 0, $thirdColo
 
     return $firstHex . $secondHex . $thirdColorHex ;
 }
+?>
